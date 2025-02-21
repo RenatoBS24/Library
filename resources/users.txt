@@ -1,0 +1,2 @@
+Renato,1234,renato@gmail.com,0
+Luis,1234,luis@gmail.com,0

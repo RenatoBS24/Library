@@ -2,16 +2,16 @@ package main
 
 import (
 	"Library/Structures"
-	"Time"
 	"bufio"
 	"fmt"
 	"os"
+	"time"
 )
 
 var scanner = bufio.NewScanner(os.Stdin)
 
 func main() {
-	fmt.Println("Hello World")
+	Index()
 }
 
 func StartLibrary() ([]*Structures.Book, []*Structures.User) {
@@ -28,7 +28,7 @@ func StartLibrary() ([]*Structures.Book, []*Structures.User) {
 	Books = append(Books, Book3)
 	// ..................................
 	Users := make([]*Structures.User, 0)
-	User1 := Structures.NewUser("User1", "1234", "renato@gamil.com", 0)
+	User1 := Structures.NewUser("Renato", "1234", "renato@gamil.com", 0)
 	Users = append(Users, User1)
 	return Books, Users
 }
@@ -51,7 +51,7 @@ func Index() {
 			Menu(Books)
 		}
 	case option == "2":
-		// Register()
+		Register(Users)
 	case option == "3":
 		os.Exit(0)
 	default:
@@ -66,6 +66,7 @@ func Login(users []*Structures.User) bool {
 	scanner.Scan()
 	username := scanner.Text()
 	fmt.Println("Password: ")
+	scanner.Scan()
 	password := scanner.Text()
 	for _, User := range users {
 		if User.ValidUser(password, username) {
@@ -75,7 +76,34 @@ func Login(users []*Structures.User) bool {
 	}
 	return false
 }
-
+func Register(users []*Structures.User) bool {
+	username := ""
+	password := ""
+	password2 := ""
+	email := ""
+	fmt.Println("***************************")
+	fmt.Println("Registrarse")
+	fmt.Println("***************************")
+	fmt.Println("Ingrese su nombre de usuario: ")
+	scanner.Scan()
+	username = scanner.Text()
+	fmt.Println("Ingrese su email: ")
+	scanner.Scan()
+	email = scanner.Text()
+	fmt.Println("Ingrese su contraseña: ")
+	scanner.Scan()
+	password = scanner.Text()
+	fmt.Println("Confirme su contraseña: ")
+	scanner.Scan()
+	password2 = scanner.Text()
+	if password == password2 {
+		user := Structures.NewUser(username, password, email, 0)
+		users = append(users, user)
+		return true
+	} else {
+		return false
+	}
+}
 func Menu(books []*Structures.Book) {
 	fmt.Println("***************************")
 	fmt.Println("Menú")
@@ -84,5 +112,14 @@ func Menu(books []*Structures.Book) {
 	fmt.Println("2. Reservar libro")
 	fmt.Println("3. Devolver libro")
 	fmt.Println("4. Salir")
+	scanner.Scan()
+	option := scanner.Text()
+	switch {
+	case option == "1":
+		for _, book := range books {
+			book.PrintBook()
+			fmt.Println("-------------------------")
+		}
+	}
 
 }
