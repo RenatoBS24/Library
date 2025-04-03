@@ -29,7 +29,9 @@ func StartLibrary() ([]*Structures.Book, []*Structures.User) {
 	// ..................................
 	Users := make([]*Structures.User, 0)
 	User1 := Structures.NewUser("Renato", "1234", "renato@gamil.com", 0)
+	User2 := Structures.NewUser("Martin", "12345", "martin@gmail.com", 0)
 	Users = append(Users, User1)
+	Users = append(Users, User2)
 	return Books, Users
 }
 
@@ -49,6 +51,9 @@ func Index() {
 	case option == "1":
 		if Login(Users) {
 			Menu(Books)
+		} else {
+			fmt.Println("Usuario o contraseña incorrecta")
+			Login(Users)
 		}
 	case option == "2":
 		Register(Users)
@@ -59,6 +64,7 @@ func Index() {
 	}
 }
 func Login(users []*Structures.User) bool {
+	confirmation := false
 	fmt.Println("***************************")
 	fmt.Println("Iniciar Sesión")
 	fmt.Println("***************************")
@@ -70,12 +76,13 @@ func Login(users []*Structures.User) bool {
 	password := scanner.Text()
 	for _, User := range users {
 		if User.ValidUser(password, username) {
-			return true
+			confirmation = true
+			break
 		}
-
 	}
-	return false
+	return confirmation
 }
+
 func Register(users []*Structures.User) bool {
 	username := ""
 	password := ""
@@ -111,7 +118,7 @@ func Menu(books []*Structures.Book) {
 	fmt.Println("1. Ver libros")
 	fmt.Println("2. Reservar libro")
 	fmt.Println("3. Devolver libro")
-	fmt.Println("4. Salir")
+	fmt.Println("4. Volver")
 	scanner.Scan()
 	option := scanner.Text()
 	switch {
@@ -120,6 +127,32 @@ func Menu(books []*Structures.Book) {
 			book.PrintBook()
 			fmt.Println("-------------------------")
 		}
+	case option == "2":
+		bookName := " "
+		fmt.Println("Ingrese el nombre del libro:")
+		scanner.Scan()
+		bookName = scanner.Text()
+		fmt.Println("El libro seleccionado es: " + bookName)
+		for _, Book := range books {
+			if Book.Title == bookName {
+				Book.Available = false
+			}
+		}
+	case option == "3":
+		bookName := ""
+		fmt.Println("Ingrese el nombre del libro:")
+		scanner.Scan()
+		bookName = scanner.Text()
+		for _, Book := range books {
+			if Book.Title == bookName {
+				Book.Available = true
+			}
+		}
+		fmt.Println("Libro devuelto correctamente")
+	case option == "4":
+		Index()
+	default:
+		fmt.Println("Opción no válida")
 	}
 
 }
