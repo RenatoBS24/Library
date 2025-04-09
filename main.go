@@ -5,6 +5,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -51,9 +52,6 @@ func Index() {
 	case option == "1":
 		if Login(Users) {
 			Menu(Books)
-		} else {
-			fmt.Println("Usuario o contraseña incorrecta")
-			Login(Users)
 		}
 	case option == "2":
 		Register(Users)
@@ -65,19 +63,21 @@ func Index() {
 }
 func Login(users []*Structures.User) bool {
 	confirmation := false
-	fmt.Println("***************************")
-	fmt.Println("Iniciar Sesión")
-	fmt.Println("***************************")
-	fmt.Println("Username: ")
-	scanner.Scan()
-	username := scanner.Text()
-	fmt.Println("Password: ")
-	scanner.Scan()
-	password := scanner.Text()
-	for _, User := range users {
-		if User.ValidUser(password, username) {
-			confirmation = true
-			break
+	for confirmation == false {
+		fmt.Println("***************************")
+		fmt.Println("Iniciar Sesión")
+		fmt.Println("***************************")
+		fmt.Println("Username: ")
+		scanner.Scan()
+		username := scanner.Text()
+		fmt.Println("Password: ")
+		scanner.Scan()
+		password := scanner.Text()
+		for _, User := range users {
+			if User.ValidUser(password, username) {
+				confirmation = true
+				break
+			}
 		}
 	}
 	return confirmation
@@ -112,47 +112,78 @@ func Register(users []*Structures.User) bool {
 	}
 }
 func Menu(books []*Structures.Book) {
-	fmt.Println("***************************")
-	fmt.Println("Menú")
-	fmt.Println("***************************")
-	fmt.Println("1. Ver libros")
-	fmt.Println("2. Reservar libro")
-	fmt.Println("3. Devolver libro")
-	fmt.Println("4. Volver")
-	scanner.Scan()
-	option := scanner.Text()
-	switch {
-	case option == "1":
-		for _, book := range books {
-			book.PrintBook()
-			fmt.Println("-------------------------")
-		}
-	case option == "2":
-		bookName := " "
-		fmt.Println("Ingrese el nombre del libro:")
+	next := true
+	for next {
+		fmt.Println("***************************")
+		fmt.Println("Menú")
+		fmt.Println("***************************")
+		fmt.Println("1. Ver libros")
+		fmt.Println("2. Reservar libro")
+		fmt.Println("3. Devolver libro")
+		fmt.Println("4. Cerrar sesión")
 		scanner.Scan()
-		bookName = scanner.Text()
-		fmt.Println("El libro seleccionado es: " + bookName)
-		for _, Book := range books {
-			if Book.Title == bookName {
-				Book.Available = false
+		option := scanner.Text()
+		switch {
+		case option == "1":
+			for _, book := range books {
+				book.PrintBook()
+				fmt.Println("-------------------------")
 			}
-		}
-	case option == "3":
-		bookName := ""
-		fmt.Println("Ingrese el nombre del libro:")
-		scanner.Scan()
-		bookName = scanner.Text()
-		for _, Book := range books {
-			if Book.Title == bookName {
-				Book.Available = true
+		case option == "2":
+			for _, book := range books {
+				book.PrintBook()
+				fmt.Println("-------------------------")
 			}
+			bookName := " "
+			fmt.Println("Ingrese el nombre del libro:")
+			scanner.Scan()
+			bookName = scanner.Text()
+			fmt.Println("El libro seleccionado es: " + bookName)
+			for _, Book := range books {
+				if Book.Title == bookName && Book.Available == true {
+					Book.Available = false
+				}
+			}
+		case option == "3":
+			bookName := ""
+			fmt.Println("Ingrese el nombre del libro:")
+			scanner.Scan()
+			bookName = scanner.Text()
+			for _, Book := range books {
+				if Book.Title == bookName {
+					Book.Available = true
+				}
+			}
+			fmt.Println("Libro devuelto correctamente")
+		case option == "4":
+			next = false
+			Index()
+		default:
+			fmt.Println("Opción no válida")
 		}
-		fmt.Println("Libro devuelto correctamente")
-	case option == "4":
-		Index()
-	default:
-		fmt.Println("Opción no válida")
+	}
+}
+
+func readFile() []string {
+	data, err := os.ReadFile("resources\\authors.txt")
+	if err != nil {
+		fmt.Println("Error al leer el archivo:", err)
+	}
+	dataFormat := string(data)
+	return strings.Split(dataFormat, "\n")
+}
+
+/* func createAuthors() []*Structures.Book {
+	authors := make([]*Structures.Author, 0)
+	books := make([]*Structures.Book, 0)
+	data := readFile()
+	for i := 0; i < len(data); i++ {
+		dataDiv := strings.Split(data[i], ",")
+		age, err := strconv.Atoi(dataDiv[2])
+		if err != nil {
+			fmt.Println("Error al convertir el tipo de dato:", err)
+		}
+		authors = append(authors, Structures.NewAuthor(dataDiv[0], dataDiv[1], age))
 	}
 
-}
+}*/
