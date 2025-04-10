@@ -1,7 +1,9 @@
-package Structures
+package structures
 
 import (
+	"Library/tools"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -36,4 +38,14 @@ func (book *Book) PrintBook() {
 	} else {
 		fmt.Println("Available: No")
 	}
+}
+func CreateBooks() []*Book {
+	authors := CreateAuthors()
+	books := make([]*Book, 0)
+	data := tools.ReadFile("resources/books.txt")
+	for i := 0; i < len(data); i++ {
+		dataDiv := strings.Split(data[i], ",")
+		books = append(books, NewBook(dataDiv[0], *authors[i], dataDiv[1], dataDiv[2], time.Now(), true))
+	}
+	return books
 }

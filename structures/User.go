@@ -1,6 +1,11 @@
-package Structures
+package structures
 
-import "fmt"
+import (
+	"Library/tools"
+	"fmt"
+	"strconv"
+	"strings"
+)
 
 type User struct {
 	Username      string
@@ -33,4 +38,18 @@ func (user *User) printUser() {
 	fmt.Println("Username: ", user.Username)
 	fmt.Println("Email: ", user.Email)
 	fmt.Println("Books Borrowed: ", user.BooksBorrowed)
+}
+
+func CreateUsers() []*User {
+	users := make([]*User, 0)
+	data := tools.ReadFile("resources/users.txt")
+	for i := 0; i < len(data); i++ {
+		dataDiv := strings.Split(data[i], ",")
+		booksBorrowed, err := strconv.Atoi(dataDiv[3])
+		if err != nil {
+			fmt.Println("Error al convertir el tipo de dato:", err)
+		}
+		users = append(users, NewUser(dataDiv[0], dataDiv[1], dataDiv[2], booksBorrowed))
+	}
+	return users
 }

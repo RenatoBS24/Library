@@ -1,12 +1,10 @@
 package main
 
 import (
-	"Library/Structures"
+	"Library/structures"
 	"bufio"
 	"fmt"
 	"os"
-	"strings"
-	"time"
 )
 
 var scanner = bufio.NewScanner(os.Stdin)
@@ -15,31 +13,9 @@ func main() {
 	Index()
 }
 
-func StartLibrary() ([]*Structures.Book, []*Structures.User) {
-	Author1 := Structures.NewAuthor("Gabriel", "Garcia Marquez", 50)
-	Author2 := Structures.NewAuthor("Julio", "Cortazar", 45)
-	Author3 := Structures.NewAuthor("Mario", "Vargas Llosa", 60)
-	// -------------------------------
-	Book1 := Structures.NewBook("Cien años de soledad", *Author1, "Novela", "Ficción", time.Now(), true)
-	Book2 := Structures.NewBook("Rayuela", *Author2, "Novela", "Ficción", time.Now(), true)
-	Book3 := Structures.NewBook("La ciudad y los perros", *Author3, "Novela", "Ficción", time.Now(), true)
-	Books := make([]*Structures.Book, 0)
-	Books = append(Books, Book1)
-	Books = append(Books, Book2)
-	Books = append(Books, Book3)
-	// ..................................
-	Users := make([]*Structures.User, 0)
-	User1 := Structures.NewUser("Renato", "1234", "renato@gamil.com", 0)
-	User2 := Structures.NewUser("Martin", "12345", "martin@gmail.com", 0)
-	Users = append(Users, User1)
-	Users = append(Users, User2)
-	return Books, Users
-}
-
 func Index() {
-	Books := make([]*Structures.Book, 0)
-	Users := make([]*Structures.User, 0)
-	Books, Users = StartLibrary()
+	Books := structures.CreateBooks()
+	Users := structures.CreateUsers()
 	fmt.Println("***************************")
 	fmt.Println("Bienvenido a la biblioteca")
 	fmt.Println("***************************")
@@ -61,7 +37,7 @@ func Index() {
 		fmt.Println("Opción no válida")
 	}
 }
-func Login(users []*Structures.User) bool {
+func Login(users []*structures.User) bool {
 	confirmation := false
 	for confirmation == false {
 		fmt.Println("***************************")
@@ -83,7 +59,7 @@ func Login(users []*Structures.User) bool {
 	return confirmation
 }
 
-func Register(users []*Structures.User) bool {
+func Register(users []*structures.User) bool {
 	username := ""
 	password := ""
 	password2 := ""
@@ -104,14 +80,14 @@ func Register(users []*Structures.User) bool {
 	scanner.Scan()
 	password2 = scanner.Text()
 	if password == password2 {
-		user := Structures.NewUser(username, password, email, 0)
+		user := structures.NewUser(username, password, email, 0)
 		users = append(users, user)
 		return true
 	} else {
 		return false
 	}
 }
-func Menu(books []*Structures.Book) {
+func Menu(books []*structures.Book) {
 	next := true
 	for next {
 		fmt.Println("***************************")
@@ -163,27 +139,3 @@ func Menu(books []*Structures.Book) {
 		}
 	}
 }
-
-func readFile() []string {
-	data, err := os.ReadFile("resources\\authors.txt")
-	if err != nil {
-		fmt.Println("Error al leer el archivo:", err)
-	}
-	dataFormat := string(data)
-	return strings.Split(dataFormat, "\n")
-}
-
-/* func createAuthors() []*Structures.Book {
-	authors := make([]*Structures.Author, 0)
-	books := make([]*Structures.Book, 0)
-	data := readFile()
-	for i := 0; i < len(data); i++ {
-		dataDiv := strings.Split(data[i], ",")
-		age, err := strconv.Atoi(dataDiv[2])
-		if err != nil {
-			fmt.Println("Error al convertir el tipo de dato:", err)
-		}
-		authors = append(authors, Structures.NewAuthor(dataDiv[0], dataDiv[1], age))
-	}
-
-}*/
