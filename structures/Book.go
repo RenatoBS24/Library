@@ -3,6 +3,7 @@ package structures
 import (
 	"Library/tools"
 	"fmt"
+	"os"
 	"strings"
 	"time"
 )
@@ -48,4 +49,27 @@ func CreateBooks() []*Book {
 		books = append(books, NewBook(dataDiv[0], *authors[i], dataDiv[1], dataDiv[2], time.Now(), true))
 	}
 	return books
+}
+
+func RegisterBook(book Book) bool {
+	file, err := os.OpenFile("resources/books.txt", os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		fmt.Println("Error al abrir el archivo: ", err)
+		return false
+	}
+	text := book.Title + "," + book.Category + "," + book.Gender
+	num, err := fmt.Fprint(file, text)
+	if err != nil {
+		fmt.Println("Error al escribir en el archivo: ", err)
+		return false
+	}
+	if num == 0 {
+		return false
+	}
+	err2 := file.Close()
+	if err2 != nil {
+		fmt.Println("Error al escribir el archivo: ", err)
+		return false
+	}
+	return true
 }

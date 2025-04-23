@@ -30,7 +30,9 @@ func Index() {
 			Menu(Books)
 		}
 	case option == "2":
-		Register(Users)
+		if Register(Users) {
+			Menu(Books)
+		}
 	case option == "3":
 		os.Exit(0)
 	default:
@@ -81,6 +83,7 @@ func Register(users []*structures.User) bool {
 	password2 = scanner.Text()
 	if password == password2 {
 		user := structures.NewUser(username, password, email, 0)
+		structures.RegisterUser(*user)
 		users = append(users, user)
 		return true
 	} else {
@@ -96,7 +99,8 @@ func Menu(books []*structures.Book) {
 		fmt.Println("1. Ver libros")
 		fmt.Println("2. Reservar libro")
 		fmt.Println("3. Devolver libro")
-		fmt.Println("4. Cerrar sesión")
+		fmt.Println("4. Ver Autores")
+		fmt.Println("5. Cerrar sesión")
 		scanner.Scan()
 		option := scanner.Text()
 		switch {
@@ -132,6 +136,10 @@ func Menu(books []*structures.Book) {
 			}
 			fmt.Println("Libro devuelto correctamente")
 		case option == "4":
+			for _, book := range books {
+				book.Author.PrintAuthor()
+			}
+		case option == "5":
 			next = false
 			Index()
 		default:
